@@ -1,0 +1,17 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - public
+        - tests
+    excludePaths:
+        - src/Migrations/*
+    ignoreErrors:
+        - '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9]* has no typehint specified.#'
+    reportUnmatchedIgnoredErrors: false
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    scanDirectories:
+        - var/cache/dev/Symfony/Config
+
+# vendor/bin/phpstan analyse src --level=8
