@@ -5,14 +5,28 @@
         <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <form action="{{ path('login') }}" method="post">
-        <label for="username">Adresse Email :</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" />
+    <div class="container m-5">
+        <form action="{{ path('login') }}" method="post" class="text-center p-3" style="background-color: #e3f2fd">
+            <div class="my-3">
+                <label for="username">Entrer votre email :</label>
+                <input type="text" id="username" name="_username" value="{{ last_username }}" /> <br/>
+            </div>
 
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" name="_password" />
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
+            <div class="my-3">
+                <label for="password">Entrer votre mot de passe :</label>
+                <input type="password" id="password" name="_password" />
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" > <br/>
+            </div>
 
-        <button class="btn btn-success" type="submit">Se connecter</button>
-    </form>
+
+            <button class="btn btn-success" type="submit">Se connecter</button> <br/>
+
+            <div class="my-3">
+                <p> Pas encore inscrit ? Inscrivez-vous :</p>
+            </div>
+
+            <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un compte</a>
+        </form>
+    </div>
+
 {% endblock %}

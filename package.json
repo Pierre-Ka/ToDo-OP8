@@ -1,0 +1,13 @@
+{
+  "name": "P8-ToDoApp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Pierre-Ka/ToDo-OP8.git",
+  "author": "Pierre Ka <ikanhiu@outlook.fr>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "stylelint": "^14.9.1",
+    "stylelint-config-standard": "^26.0.0"
+  }
+}

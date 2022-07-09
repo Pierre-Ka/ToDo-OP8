@@ -6,11 +6,13 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
+#[Security("is_granted('ROLE_ADMIN')", message: 'Page Introuvable', statusCode: 404)]
 class UserController extends AbstractController
 {
     /**
@@ -18,7 +20,6 @@ class UserController extends AbstractController
      */
     public function listAction(UserRepository $userRepository)
     {
-
         return $this->render('user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
 
@@ -29,11 +30,11 @@ class UserController extends AbstractController
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
+            $plainPassword = $form->get('password')->getData();
+            $password = $userPasswordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($password);
 
             $em->persist($user);

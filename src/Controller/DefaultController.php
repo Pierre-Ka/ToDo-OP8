@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
@@ -12,6 +12,10 @@ class DefaultController extends AbstractController
      */
     public function indexAction()
     {
+        if (!$this->getUser())
+        {
+            return $this->redirectToRoute('login', []);
+        }
         return $this->render('default/index.html.twig');
     }
 }

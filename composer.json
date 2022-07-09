@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.0.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^1.0",
@@ -45,7 +45,10 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.8",
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "fakerphp/faker": "^1.19",
+        "friendsoftwig/twigcs": "^6.0",
+        "phpmd/phpmd": "^2.12",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.8",
         "phpstan/phpstan-doctrine": "^1.3",
