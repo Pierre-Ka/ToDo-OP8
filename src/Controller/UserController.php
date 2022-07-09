@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Manager\UserManager;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -15,31 +16,20 @@ use Symfony\Component\HttpFoundation\Request;
 #[Security("is_granted('ROLE_ADMIN')", message: 'Page Introuvable', statusCode: 404)]
 class UserController extends AbstractController
 {
-    /**
-     * @Route("/users", name="user_list")
-     */
-    public function listAction(UserRepository $userRepository)
+    #[Route('/users', name: 'user_list', methods: ['GET'])]
+    public function list(UserRepository $userRepository)
     {
         return $this->render('user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
 
-    /**
-     * @Route("/users/create", name="user_create")
-     */
-    public function createAction(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher)
+    #[Route('/users/create', name: 'user_create', methods: ['GET', 'POST'])]
+    public function create(Request $request, UserManager $userManager)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('password')->getData();
-            $password = $userPasswordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($password);
-
-            $em->persist($user);
-            $em->flush();
-
+            $userManager->new($form, $user);
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
             return $this->redirectToRoute('user_list');
@@ -48,21 +38,13 @@ class UserController extends AbstractController
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/users/{id}/edit", name="user_edit")
-     */
-    public function editAction(User $user, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher)
+    #[Route('/users/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
+    public function edit(User $user, Request $request, UserManager $userManager)
     {
         $form = $this->createForm(UserType::class, $user);
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($password);
-
-            $em->flush();
-
+            $userManager->update($user);
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
             return $this->redirectToRoute('user_list');
