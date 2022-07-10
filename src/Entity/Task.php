@@ -11,6 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Task
 {
+//    #[ORM\Id]
+//    #[ORM\GeneratedValue]
+//    #[ORM\Column(type: 'integer')]
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -18,28 +21,37 @@ class Task
      */
     private ?int $id = null;
 
+//    #[ORM\Column(type: 'datetime', nullable: true)]
     /**
      * @ORM\Column(type="datetime")
      */
     private \DateTime $createdAt;
 
+//    #[ORM\Column(type: 'string', length: 255)]
+//    #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="Vous devez saisir un titre.")
      */
     private string $title;
 
+//    #[ORM\Column(type: 'string', length: 255)]
+//    #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Vous devez saisir du contenu.")
      */
     private string $content;
 
+
+//    #[ORM\Column(type: 'boolean')]
     /**
      * @ORM\Column(type="boolean")
      */
     private bool $isDone;
 
+//    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
+//    #[ORM\JoinColumn(nullable: true)]
     /**
      * @ORM\ManyToOne(targetEntity=user::class, inversedBy="tasks")
      */
@@ -106,5 +118,4 @@ class Task
     {
         $this->user = $user;
     }
-
 }
