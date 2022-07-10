@@ -17,6 +17,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+//    #[ORM\Id]
+//    #[ORM\GeneratedValue]
+//    #[ORM\Column(type: 'integer')]
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -24,17 +27,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?int $id = null;
 
+//    #[ORM\Column(type: 'string', length: 25, unique: true)]
+//    #[Assert\NotBlank(message: 'Vous devez saisir un nom d\'utilisateur.')]
+//    #[Assert\Length(min: 3, minMessage: 'Le nom n\'est pas assez long', max: 25, maxMessage: 'Le nom doit être inferieur à 25 caractères')]
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
      */
     private string $username;
 
+//    #[ORM\Column(type: 'string')]
     /**
      * @ORM\Column(type="string", length=64)
      */
     private string $password;
 
+//    #[ORM\Column(type: 'string', length: 255, unique: true)]
+//    #[Assert\NotBlank(message: 'Entrer votre email')]
+//    #[Assert\Email(message:'Entrer un email valide')]
     /**
      * @ORM\Column(type="string", length=60, unique=true)
      * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
@@ -42,12 +52,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private string $email;
 
+//    #[ORM\Column(type: 'json')]
     /**
      * @ORM\Column(type="json")
      * @var array<string>
      */
     private array $roles = [];
 
+//    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
     /**
      * @ORM\OneToMany(targetEntity=Task::class, mappedBy="user")
      */

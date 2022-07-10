@@ -28,6 +28,11 @@ class UserFixtures extends Fixture
                 $user->setEmail('admin@admin.fr');
                 $user->setRoles(['ROLE_ADMIN']);
             }
+            elseif( 1 === $i) {
+                $user->setUsername('user');
+                $user->setEmail('user@user.fr');
+                $user->setRoles(['ROLE_USER']);
+            }
             else {
                 $name = $faker->name();
                 if (strlen($name) > 25) {

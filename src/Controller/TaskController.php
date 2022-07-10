@@ -13,8 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Security("is_granted('ROLE_USER')", message: 'Page Introuvable', statusCode: 404)]
-// Depuis la mise en place du role hierarchie, je peux faire un ROLE_USER même pour un admin
-//#[Security("is_granted(''IS_AUTHENTICATED_FULLY'')", message: 'Page Introuvable', statusCode: 404)]
+// Depuis la mise en place du role hierarchie, je peux faire un ROLE_USER même pour un admin au lieu de 'IS_AUTHENTICATED_FULLY'
 class TaskController extends AbstractController
 {
     #[Route('/tasks/undone', name: 'task_list_undone', methods: ['GET'])]
