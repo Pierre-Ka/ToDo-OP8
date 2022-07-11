@@ -3,22 +3,31 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class AbstractControllerTest extends WebTestCase
 {
-    // GetAdmin
-
-    // GetUser
-
-    // GetUnknow
-
     protected $client;
+//    /** @var TaskRepository */
+//    protected $taskRepository;
+//    /** @var UserRepository */
+//    protected $userRepository;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+//        $this->taskRepository = $this->getContainer()->get(TaskRepository::class);
+//        $this->userRepository = $this->getContainer()->get(UserRepository::class);
+    }
+
+    public function getUser()
+    {
+        $userRepository = $this->client->getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy(['username' => 'user']);
+        $this->client->loginUser($testUser);
     }
 
     public function loginAsAdmin(): void
@@ -60,13 +69,8 @@ abstract class AbstractControllerTest extends WebTestCase
 
     public function IndexAsUser(): Crawler
     {
-//        $userRepository = self::$container->get(UserRepository::class);
-//        De maniere etrange, ce code donne :
-//        Error: Access to undeclared static property App\Tests\Controller\SecurityControllerTest::$container
-//        $this->loginAsUser();
+        $userRepository = $this->client->getContainer()->get(UserRepository::class);
 
-        $userRepository = $this->client->getContainer()->get('doctrine.orm.entity_manager')
-            ->getRepository(User::class);
         $testUser = $userRepository->findOneBy(['username' => 'admin']);
         $this->client->loginUser($testUser);
         $crawler = $this->client->request('GET', '/');

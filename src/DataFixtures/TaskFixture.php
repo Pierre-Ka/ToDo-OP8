@@ -17,27 +17,26 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('fr_FR');
         for ($i = 0; $i < self::NUMBER_OF_TASK; $i++) {
-
-            $userKey = rand(0, UserFixtures::NUMBER_OF_USER - 1);
-            /** @var User $user */
-            $user = $this->getReference('user_' . $userKey);
-
             $task = new Task();
             $task->setCreatedAt($faker->dateTimeThisYear());
             $task->setTitle($faker->word());
             $task->setContent($faker->sentence(6, true));
-
             $referentTime = $faker->dateTimeBetween('-6 months', 'now');
+
+            $userKey = rand(0, UserFixtures::NUMBER_OF_USER - 1);
+            /** @var User $user */
+            $user = $this->getReference('user_' . $userKey);
             if ( $task->getCreatedAt() >= $referentTime )
             {
                 $task->setUser($user);
             }
 
-            if($task->getCreatedAt() >= $faker->dateTimeThisMonth()) {
-                // is not done
+            if($task->getCreatedAt() >= $faker->dateTimeThisMonth())
+            {
                 $task->toggle(0);
             }
-            else {
+            else
+            {
                 $task->toggle(1);
             }
             $manager->persist($task);

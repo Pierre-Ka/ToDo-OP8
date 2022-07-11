@@ -63,6 +63,9 @@ class UserType extends AbstractType
                 'required' => true
             ]);
 
+        // Ici il se passe que le form renvoie un string : 'ROLE_USER' ou 'ROLE_ADMIN' alors que l'entité
+        // attend un array. Pk ? Car on a pas activé le multiple => true. Mais dans notre cas, on ne l'active pas
+        // alors on va créer un dataTransformer pour "rôles" :
         //roles field data transformer
         $builder->get('roles')
             ->addModelTransformer(new CallbackTransformer(

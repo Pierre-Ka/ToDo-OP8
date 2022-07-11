@@ -40,13 +40,13 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
          * https://symfony.com/doc/current/security/custom_authenticator.html
          * You can optionally pass a user loader as second argument to the UserBadge. This callable receives the
          * $userIdentifier and must return a UserInterface object (otherwise a UserNotFoundException is thrown):
-         * Pourquoi il n'est pas capable de trouver l'Userloader tout seul ?
+         * Pourquoi il n'est pas capable de trouver l'Userloader tout seul ? Finalement, si ?
          */
 
         return new Passport(
-            new UserBadge($email, function ($email) {
+            new UserBadge($email /*, function ($email) {
                 return $this->userRepository->findOneBy(['email' => $email]);
-            }),
+            } */),
             new PasswordCredentials($request->request->get('_password', '')),
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
