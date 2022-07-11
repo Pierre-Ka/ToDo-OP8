@@ -2,9 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
 class DefaultControllerTest extends AbstractControllerTest
 {
     public function testIndexAsNonUser(): void
@@ -14,7 +11,6 @@ class DefaultControllerTest extends AbstractControllerTest
         $crawler = $this->client->followRedirect();
         self::assertContains('Se connecter', [$crawler->filter('button.btn.btn-success')->text()]);
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
-
     }
 
     public function testIndexAsUser(): void

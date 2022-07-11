@@ -10,11 +10,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+
+
 /**
  * @ORM\Table("user")
  * @ORM\Entity
- * @UniqueEntity("email")
  */
+
+
+// Double unique entité ne marche pas ?!
+// Pourtant c'est la doc: https://symfony.com/doc/current/reference/constraints/UniqueEntity.html#fields
+//#[UniqueEntity(fields: ['email', 'username'], message: 'Ce champ doit être unique')]
+#[UniqueEntity(fields: ['email'], message: 'Ce champ doit être unique')]
+#[UniqueEntity(fields: ['username'], message: 'Ce champ doit être unique')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 //    #[ORM\Id]

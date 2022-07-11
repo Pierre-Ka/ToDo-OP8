@@ -16,7 +16,8 @@ class UserManager
         $this->hasher = $hasher;
     }
 
-    public function new($form, $user)
+    // Pas de form dans le manager => traitement seulement ($password, $user)
+    public function new($form, $user): void
     {
         $plainPassword = $form->get('password')->getData();
         $password =  $this->hasher->hashPassword($user, $plainPassword);
@@ -24,7 +25,8 @@ class UserManager
         $this->em->persist($user);
         $this->em->flush();
     }
-    public function update($user)
+
+    public function update($user): void
     {
         $password = $this->hasher->hashPassword($user, $user->getPassword());
         $user->setPassword($password);
