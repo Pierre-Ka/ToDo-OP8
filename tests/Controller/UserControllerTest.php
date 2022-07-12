@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 
+//        dd($this->client->getResponse()->getContent());
 class UserControllerTest extends AbstractControllerTest
 {
     /** @var TaskRepository */
@@ -31,11 +32,9 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testListAsAdmin()
     {
-        $testUser = $this->userRepository->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/users');
+        $this->getAdmin();
 
-        //        dd($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('GET', '/users');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Liste des utilisateurs', [$crawler->filter('h1')->text()]);
         self::assertContains('Créer un utilisateur', [$crawler->filter('a.btn.btn-info.pull-right')->text()]);
@@ -44,8 +43,8 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testListAsUser()
     {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
+        $this->getUser();
+
         $crawler = $this->client->request('GET', '/users');
         self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         self::assertContains('Page Introuvable (404 Not Found)', [$crawler->filter('title')->text()]);
@@ -62,20 +61,11 @@ class UserControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function accessCreateUserPageAsAdmin()
-    {
-        $testUser = $this->userRepository->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/users/create');
-
-        return $crawler;
-    }
-
     public function testAccessCreatePageAsAdmin()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
 
-        //        dd($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('GET', '/users/create');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer un utilisateur', [$crawler->filter('h1')->text()]);
         self::assertContains('Ajouter', [$crawler->filter('button.btn.btn-success')->text()]);
@@ -84,8 +74,8 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testAccessCreatePageAsUser()
     {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
+        $this->getUser();
+
         $crawler = $this->client->request('GET', '/users/create');
         self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         self::assertContains('Page Introuvable (404 Not Found)', [$crawler->filter('title')->text()]);
@@ -94,7 +84,9 @@ class UserControllerTest extends AbstractControllerTest
     /************************************* Test Create *****************************************************/
     public function testCreateUserWithValidData()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'firstTest',
@@ -124,7 +116,9 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testCreateUserWithPassportsUnmatch()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'secondTest',
@@ -133,7 +127,6 @@ class UserControllerTest extends AbstractControllerTest
             'user[email]' => 'secondTest@secondTest',
             'user[roles]' => 'ROLE_USER'
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
 
@@ -150,6 +143,7 @@ class UserControllerTest extends AbstractControllerTest
 //        generation de la page ne contient pas de <span> dans le <label></label>. Ainsi en jouant le test ci-dessous,
 //        on a 0 qui s'affiche
 //        dd($crawler->filter('label.required')->eq(1)->children('span')->count());
+//        Finalement on a ceci : le crawler symfony ne supporte pas le JS.
 
         self::assertContains('Créer un utilisateur', [$crawler->filter('h1')->text()]);
         self::assertContains('Ajouter', [$crawler->filter('button.btn.btn-success')->text()]);
@@ -159,7 +153,9 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testCreateUserWithInvalidEmail()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'thirdTest',
@@ -168,7 +164,6 @@ class UserControllerTest extends AbstractControllerTest
             'user[email]' => 'thirdTest.fr',
             'user[roles]' => 'ROLE_USER'
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer un utilisateur', [$crawler->filter('h1')->text()]);
@@ -179,7 +174,9 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testCreateUserWithInvalidPassword()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'fourthTest',
@@ -188,7 +185,6 @@ class UserControllerTest extends AbstractControllerTest
             'user[email]' => 'fourthTest.fr',
             'user[roles]' => 'ROLE_USER'
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer un utilisateur', [$crawler->filter('h1')->text()]);
@@ -197,10 +193,11 @@ class UserControllerTest extends AbstractControllerTest
         $this->assertNull($this->userRepository->findOneBy(['username' => 'secondTest']));
     }
 
-
     public function testCreateUserWithEmailAlreadyUse()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'fiveTest',
@@ -209,7 +206,6 @@ class UserControllerTest extends AbstractControllerTest
             'user[email]' => 'user@user.fr',
             'user[roles]' => 'ROLE_USER'
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer un utilisateur', [$crawler->filter('h1')->text()]);
@@ -220,7 +216,9 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testCreateUserWithUsernameAlreadyUse()
     {
-        $crawler = $this->accessCreateUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'admin',
@@ -229,7 +227,6 @@ class UserControllerTest extends AbstractControllerTest
             'user[email]' => 'sixTest@sixTest.fr',
             'user[roles]' => 'ROLE_USER'
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer un utilisateur', [$crawler->filter('h1')->text()]);
@@ -243,7 +240,6 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testAccessEditPageAsNonUser()
     {
-
         $crawler = $this->client->request('GET', '/users/2/edit');
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
@@ -251,20 +247,11 @@ class UserControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function accessEditUserPageAsAdmin()
-    {
-        $testUser = $this->userRepository->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/users/2/edit');
-
-        return $crawler;
-    }
-
     public function testAccessEditPageAsAdmin()
     {
-        $crawler = $this->accessEditUserPageAsAdmin();
+        $this->getAdmin();
 
-        //        dd($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('GET', '/users/2/edit');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Modifier user', [$crawler->filter('h1')->text()]);
         self::assertContains('Modifier', [$crawler->filter('button.btn.btn-success')->text()]);
@@ -273,8 +260,8 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testAccessEditPageAsUser()
     {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
+        $this->getUser();
+
         $crawler = $this->client->request('GET', '/users/2/edit');
         self::assertEquals(404, $this->client->getResponse()->getStatusCode());
         self::assertContains('Page Introuvable (404 Not Found)', [$crawler->filter('title')->text()]);
@@ -284,7 +271,9 @@ class UserControllerTest extends AbstractControllerTest
 
     public function testEditUserSuccessfully(): void
     {
-        $crawler = $this->accessEditUserPageAsAdmin();
+        $this->getAdmin();
+
+        $crawler = $this->client->request('GET', '/users/2/edit');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'user[username]' => 'editTest',

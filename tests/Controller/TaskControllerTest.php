@@ -3,10 +3,8 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Task;
-use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
-use Symfony\Component\DomCrawler\Crawler;
 
 class TaskControllerTest extends AbstractControllerTest
 {
@@ -42,34 +40,22 @@ class TaskControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function listUndoneAsUser(): Crawler
-    {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/tasks/undone');
-
-        return $crawler;
-    }
     public function testListUndoneAsUser()
     {
-        $crawler = $this->listUndoneAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/undone');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Retour à la page d\'accueil', [$crawler->filter('a.btn.btn-secondary')->text()]);
         self::assertContains('Marquer comme faite', [$crawler->filter('button.btn.btn-success.btn-sm.pull-right')->text()]);
         self::assertNotContains($crawler->filter('i.fa.fa-close.fa-lg'), [$crawler]);
     }
 
-    public function listDoneAsUser(): Crawler
-    {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/tasks/done');
-
-        return $crawler;
-    }
     public function testListDoneAsUser()
     {
-        $crawler = $this->listDoneAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/done');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Retour à la page d\'accueil', [$crawler->filter('a.btn.btn-secondary')->text()]);
         self::assertContains('Marquer non terminée', [$crawler->filter('button.btn.btn-success.btn-sm.pull-right')->text()]);
@@ -87,18 +73,11 @@ class TaskControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function accessCreateTaskAsUser()
-    {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/tasks/create');
-
-        return $crawler;
-    }
-
     public function testAccessCreateTaskAsUser()
     {
-        $crawler = $this->accessCreateTaskAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/create');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer une nouvelle tache', [$crawler->filter('h1')->text()]);
         self::assertContains('Ajouter', [$crawler->filter('button.btn.btn-success')->text()]);
@@ -109,7 +88,9 @@ class TaskControllerTest extends AbstractControllerTest
 
     public function testCreateTaskWithValidData()
     {
-        $crawler = $this->accessCreateTaskAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'task[title]' => 'New Task for create toggle and delete test',
@@ -118,9 +99,7 @@ class TaskControllerTest extends AbstractControllerTest
         $this->client->submit($form);
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
-
         self::assertEquals('homepage', $this->client->getRequest()->get('_route'));
-//        dd($this->client->getResponse()->getContent());
         self::assertContains('Superbe ! La tâche a été bien été ajoutée.', [$crawler->filter('div.alert.alert-success')->text()]);
         self::assertContains('Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !', [$crawler->filter('h1')->text()]);
 
@@ -132,13 +111,14 @@ class TaskControllerTest extends AbstractControllerTest
 
     public function testCreateTaskWithEmptyTitle()
     {
-        $crawler = $this->accessCreateTaskAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'task[title]' => '',
             'task[content]' => 'New content for new task'
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer une nouvelle tache', [$crawler->filter('h1')->text()]);
@@ -149,13 +129,14 @@ class TaskControllerTest extends AbstractControllerTest
 
     public function testCreateTaskWithEmptyContent()
     {
-        $crawler = $this->accessCreateTaskAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/create');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'task[title]' => 'New Task for empty content test',
             'task[content]' => ''
         ]);
-        $form->disableValidation();
         $this->client->submit($form);
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Créer une nouvelle tache', [$crawler->filter('h1')->text()]);
@@ -175,19 +156,12 @@ class TaskControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function accessEditTaskAsUser()
-    {
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
-        $crawler = $this->client->request('GET', '/tasks/11/edit');
-
-        return $crawler;
-    }
-
     public function testAccessEditTaskAsUser()
     {
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/11/edit');
         $task = $this->taskRepository->findOneBy(['id' => 11]);
-        $crawler = $this->accessEditTaskAsUser();
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Modifier ' . $task->getTitle(), [$crawler->filter('h1')->text()]);
         self::assertContains('Modifier', [$crawler->filter('button.btn.btn-success')->text()]);
@@ -198,7 +172,9 @@ class TaskControllerTest extends AbstractControllerTest
 
     public function testEditTaskSuccessfully(): void
     {
-        $crawler = $this->accessEditTaskAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/tasks/11/edit');
         $buttonCrawlerMode = $crawler->filter('form');
         $form = $buttonCrawlerMode->form([
             'task[title]' => 'Entry of new title for edit task test',
@@ -207,7 +183,6 @@ class TaskControllerTest extends AbstractControllerTest
         $this->client->submit($form);
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
-
         self::assertEquals('homepage', $this->client->getRequest()->get('_route'));
         self::assertContains('Superbe ! La tâche a bien été modifiée.', [$crawler->filter('div.alert.alert-success')->text()]);
         self::assertContains('Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !', [$crawler->filter('h1')->text()]);
@@ -229,55 +204,122 @@ class TaskControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function testToggleTaskFromListUnDone()
+    public function testToogleUndoneTask()
     {
-        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+        // Setter la task comme undone
+        $testTask = $this->taskRepository->findOneBy(['id' => 22]);
+        $testTask->setAsUndone();
+        $taskTitle = $testTask->getTitle();
         self::assertSame(false, $testTask->isDone());
 
-        $crawler = $this->listUndoneAsUser();
-        self::assertContains('Marquer comme faite', [$crawler->filter('button.btn.btn-success.btn-sm.pull-right')->text()]);
-        $form = $crawler->selectButton('Marquer comme faite')->form();
-        $this->client->submit($form);
+        $this->getUser();
 
+        $crawler = $this->client->request('GET', '/tasks/22/toggle');
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
-
+        self::assertEquals('task_toggle', $this->client->getRequest()->get('_route'));
         $crawler = $this->client->followRedirect();
-
         self::assertEquals('homepage', $this->client->getRequest()->get('_route'));
-        self::assertContains('Superbe ! La tâche New Task for create toggle and delete test a bien été marquée comme terminée', [$crawler->filter('div.alert.alert-success')->text()]);
+        self::assertContains('Superbe ! La tâche '.$taskTitle.' a bien été marquée comme terminée', [$crawler->filter('div.alert.alert-success')->text()]);
         self::assertContains('Que souhaitez-vous faire maintenant ?', [$crawler->filter('h2')->text()]);
         self::assertContains('Consulter la liste des tâches terminées', [$crawler->filter('a.btn.btn-secondary.btn-md')->text()]);
 
-        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+        // Check Task comme done
+        $testTask = $this->taskRepository->findOneBy(['title' => $taskTitle]);
         self::assertSame(true, $testTask->isDone());
     }
 
-    public function testToggleTaskFromListDone()
+    public function testToogleDoneTask()
     {
-        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+        // Setter la task comme done
+        $testTask = $this->taskRepository->findOneBy(['id' => 22]);
+        $testTask->setAsDone();
+        $taskTitle = $testTask->getTitle();
         self::assertSame(true, $testTask->isDone());
 
-        $crawler = $this->listDoneAsUser();
-        self::assertContains('Marquer non terminée', [$crawler->filter('button.btn.btn-success.btn-sm.pull-right')->text()]);
-        $form = $crawler->selectButton('Marquer non terminée')->form();
-        $this->client->submit($form);
+        $this->getUser();
 
+        $crawler = $this->client->request('GET', '/tasks/22/toggle');
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
-
+        self::assertEquals('task_toggle', $this->client->getRequest()->get('_route'));
         $crawler = $this->client->followRedirect();
-
         self::assertEquals('homepage', $this->client->getRequest()->get('_route'));
-        self::assertContains('Superbe ! La tâche New Task for create toggle and delete test a bien été marquée comme non terminée.', [$crawler->filter('div.alert.alert-success')->text()]);
+        self::assertContains('Superbe ! La tâche '.$taskTitle.' a bien été marquée comme non terminée.', [$crawler->filter('div.alert.alert-success')->text()]);
         self::assertContains('Que souhaitez-vous faire maintenant ?', [$crawler->filter('h2')->text()]);
         self::assertContains('Consulter la liste des tâches terminées', [$crawler->filter('a.btn.btn-secondary.btn-md')->text()]);
 
-        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+        // Check Task comme undone
+        $testTask = $this->taskRepository->findOneBy(['title' => $taskTitle]);
         self::assertSame(false, $testTask->isDone());
     }
+
+
+
+    /*
+        DISQUALIFICATION DE DEUX TESTS :
+        Les tests testToggleTaskFromListUnDone() et testToggleTaskFromListDone() sont des tests très interressants.
+        Ils permettent de toggle la tache non pas par l'url mais par les boutons 'Marquer comme faite' 'Marquer comme
+        non faite' via le navigateur. Ainsi ils simulent le clic, la soumission du formulaire et le changement
+        d'etat de la tache.
+        Ils ne peuvent cependant pas être retenu car ils ne sont pas independants, ils dependent du test de création
+        de la tache réalisé plus haut. En effet via le crawler, on selectionne le premier bouton
+        'Marquer comme faite' qui est le bouton de la tache la plus recente cad celle que l'on a crée plus haut.
+
+        On a pas réussi à trouver le moyen de selectionner le bouton d'une tache précise ( genre id = 33 ).
+    */
+//    public function testToggleTaskFromListUnDone()
+//    {
+//        $this->getUser();
+//
+//
+//        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+//        self::assertSame(false, $testTask->isDone());
+//
+//        $this->getUser();
+//        $crawler = $this->client->request('GET', '/tasks/undone');
+//        self::assertContains('Marquer comme faite', [$crawler->filter('button.btn.btn-success.btn-sm.pull-right')->text()]);
+//        $form = $crawler->selectButton('Marquer comme faite')->form();
+//        $this->client->submit($form);
+//
+//        self::assertEquals(302, $this->client->getResponse()->getStatusCode());
+//
+//        $crawler = $this->client->followRedirect();
+//
+//        self::assertEquals('homepage', $this->client->getRequest()->get('_route'));
+//        self::assertContains('Superbe ! La tâche New Task for create toggle and delete test a bien été marquée comme terminée', [$crawler->filter('div.alert.alert-success')->text()]);
+//        self::assertContains('Que souhaitez-vous faire maintenant ?', [$crawler->filter('h2')->text()]);
+//        self::assertContains('Consulter la liste des tâches terminées', [$crawler->filter('a.btn.btn-secondary.btn-md')->text()]);
+//
+//        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+//        self::assertSame(true, $testTask->isDone());
+//    }
+//
+//    public function testToggleTaskFromListDone()
+//    {
+//        $this->getUser();
+//
+//        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+//        self::assertSame(true, $testTask->isDone());
+//
+//        $crawler = $this->client->request('GET', '/tasks/done');
+//        self::assertContains('Marquer non terminée', [$crawler->filter('button.btn.btn-success.btn-sm.pull-right')->text()]);
+//        $form = $crawler->selectButton('Marquer non terminée')->form();
+//        $this->client->submit($form);
+//
+//        self::assertEquals(302, $this->client->getResponse()->getStatusCode());
+//
+//        $crawler = $this->client->followRedirect();
+//
+//        self::assertEquals('homepage', $this->client->getRequest()->get('_route'));
+//        self::assertContains('Superbe ! La tâche New Task for create toggle and delete test a bien été marquée comme non terminée.', [$crawler->filter('div.alert.alert-success')->text()]);
+//        self::assertContains('Que souhaitez-vous faire maintenant ?', [$crawler->filter('h2')->text()]);
+//        self::assertContains('Consulter la liste des tâches terminées', [$crawler->filter('a.btn.btn-secondary.btn-md')->text()]);
+//
+//        $testTask = $this->taskRepository->findOneBy(['title' => 'New Task for create toggle and delete test']);
+//        self::assertSame(false, $testTask->isDone());
+//    }
 
 
     /***************************************** Delete ***********************************************************/
-// La tache 11 est crée par le user : user. La tache 12 est crée par le user : admin
 
     public function testDeleteTaskByNonUser()
     {
@@ -294,9 +336,9 @@ class TaskControllerTest extends AbstractControllerTest
         $task = $this->taskRepository->findOneBy(['id' => 33]);
         $user = $this->userRepository->findOneBy(['username' => 'user']);
         $task->setUser($user);
+
         // Recuperer un admin
-        $testUser = $this->userRepository->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($testUser);
+        $this->getAdmin();
 
         $crawler = $this->client->request('GET', '/tasks/33/delete');
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
@@ -309,9 +351,9 @@ class TaskControllerTest extends AbstractControllerTest
         $task = $this->taskRepository->findOneBy(['id' => 33]);
         $user = $this->userRepository->findOneBy(['username' => 'admin']);
         $task->setUser($user);
+
         // Recuperer un user
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
+        $this->getUser();
 
         $crawler = $this->client->request('GET', '/tasks/33/delete');
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
@@ -323,9 +365,9 @@ class TaskControllerTest extends AbstractControllerTest
         // Setter un anonymous
         $task = $this->taskRepository->findOneBy(['id' => 33]);
         $task->setUser(null);
+
         // Recuperer un user
-        $testUser = $this->userRepository->findOneBy(['username' => 'user']);
-        $this->client->loginUser($testUser);
+        $this->getUser();
 
         $crawler = $this->client->request('GET', '/tasks/33/delete');
         self::assertEquals(403, $this->client->getResponse()->getStatusCode());
@@ -337,9 +379,9 @@ class TaskControllerTest extends AbstractControllerTest
         // Setter un anonymous
         $task = $this->taskRepository->findOneBy(['id' => 33]);
         $task->setUser(null);
+
         // Recuperer un admin
-        $testUser = $this->userRepository->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($testUser);
+        $this->getAdmin();
 
         $crawler = $this->client->request('GET', '/tasks/33/delete');
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
@@ -354,9 +396,11 @@ class TaskControllerTest extends AbstractControllerTest
 
     public function testDeleteTaskByUserAsAuthor()
     {
+        // Recupère un user
         $testUser = $this->userRepository->findOneBy(['username' => 'user']);
         $this->client->loginUser($testUser);
 
+        // Setter le user as Author
         $task = $this->taskRepository->findOneBy(['id' => 44]);
         $task->setUser($testUser);
 
