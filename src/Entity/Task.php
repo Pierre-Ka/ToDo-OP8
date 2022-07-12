@@ -109,6 +109,16 @@ class Task
         $this->isDone = $flag;
     }
 
+    public function setAsDone():void
+    {
+        $this->isDone = true;
+    }
+
+    public function setAsUndone():void
+    {
+        $this->isDone = false;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;

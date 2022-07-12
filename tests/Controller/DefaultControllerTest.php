@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+//        dd($this->client->getResponse()->getContent());
 class DefaultControllerTest extends AbstractControllerTest
 {
     public function testIndexAsNonUser(): void
@@ -15,6 +16,11 @@ class DefaultControllerTest extends AbstractControllerTest
 
     public function testIndexAsUser(): void
     {
-        $this->IndexAsUser();
+        $this->getUser();
+
+        $crawler = $this->client->request('GET', '/');
+        self::assertEquals(200, $this->client->getResponse()->getStatusCode());
+        self::assertContains('Que souhaitez-vous faire maintenant ?', [$crawler->filter('h2')->text()]);
+        self::assertContains('Consulter la liste des tâches terminées', [$crawler->filter('a.btn.btn-secondary.btn-md')->text()]);
     }
 }
