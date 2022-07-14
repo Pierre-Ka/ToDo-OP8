@@ -27,6 +27,9 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <directory suffix=".php">src/DataFixtures</directory>
+        </exclude>
     </coverage>
 
     <listeners>
@@ -38,6 +41,12 @@
     <extensions>
         <extension class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
+    -->
+
+    <!-- Cet ajout permet d'effectuer un test-coverage lors des tests
+    <logging>
+        <junit outputFile="php://stdout"/>
+    </logging>
     -->
 </phpunit>
 

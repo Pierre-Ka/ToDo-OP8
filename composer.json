@@ -48,6 +48,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "fakerphp/faker": "^1.19",
         "friendsoftwig/twigcs": "^6.0",
+        "icanhazstring/composer-unused": "^0.8.2",
         "phpmd/phpmd": "^2.12",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.8",
