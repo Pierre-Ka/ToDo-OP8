@@ -35,7 +35,7 @@ class SecurityControllerTest extends AbstractControllerTest
         $crawler = $this->client->followRedirect();
         self::assertEquals('login', $this->client->getRequest()->get('_route'));
         self::assertContains('Invalid credentials.', [$crawler->filter('div.alert.alert-danger')->text()]);
-        self::assertStringContainsString('Se Connecter', '' . $this->client->getResponse()->getContent());
+        self::assertContains('Se connecter', [$crawler->filter('button.btn.btn-success')->text()]);
         self::assertNotContains($crawler->filter('#test-for-admin'), [$crawler]);
     }
 
