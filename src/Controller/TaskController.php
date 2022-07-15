@@ -4,13 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use App\Manager\TaskManager;
+use App\Manager\TaskManagerInterface;
 use App\Repository\TaskRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Security("is_granted('ROLE_USER')", message: 'Page Introuvable', statusCode: 404)]
 // Depuis la mise en place du role hierarchie, je peux faire un ROLE_USER même pour un admin au lieu de 'IS_AUTHENTICATED_FULLY'
@@ -31,7 +30,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/create', name: 'task_create', methods: ['GET', 'POST'])]
-    public function create(Request $request, TaskManager $taskManager)
+    public function create(Request $request, TaskManagerInterface $taskManager)
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
@@ -47,7 +46,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit', methods: ['GET', 'POST'])]
-    public function edit(Task $task, Request $request, TaskManager $taskManager)
+    public function edit(Task $task, Request $request, TaskManagerInterface $taskManager)
     {
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
@@ -65,7 +64,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle', methods: ['GET'])]
-    public function toggle(Task $task, TaskManager $taskManager)
+    public function toggle(Task $task, TaskManagerInterface $taskManager)
     {
         $taskManager->toggle($task);
         if($task->isDone())
@@ -83,7 +82,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete', methods: ['GET', 'POST'])]
-    public function delete(Task $task, TaskManager $taskManager)
+    public function delete(Task $task, TaskManagerInterface $taskManager)
     {
         $this->denyAccessUnlessGranted('delete', $task);
         $taskManager->delete($task);

@@ -2,10 +2,11 @@
 
 namespace App\Manager;
 
+use App\Entity\Task;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
-class TaskManager
+class TaskManager implements TaskManagerInterface
 {
     private EntityManagerInterface $em;
     private Security $security;
@@ -16,7 +17,7 @@ class TaskManager
         $this->security = $security;
     }
 
-    public function new($task)
+    public function new(Task $task)
     {
         $task->setUser($this->security->getUser());
         $this->em->persist($task);
@@ -26,12 +27,12 @@ class TaskManager
     {
         $this->em->flush();
     }
-    public function toggle($task)
+    public function toggle(Task $task)
     {
         $task->toggle(!$task->isDone());
         $this->em->flush();
     }
-    public function delete($task)
+    public function delete(Task $task)
     {
         $this->em->remove($task);
         $this->em->flush();

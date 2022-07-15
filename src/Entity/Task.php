@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,7 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table
  */
-
 
 class Task
 {
@@ -73,7 +71,7 @@ class Task
         return $this->createdAt;
     }
 
-    public function setCreatedAt($createdAt): void {
+    public function setCreatedAt(\Datetime $createdAt): void {
         $this->createdAt = $createdAt;
     }
 
@@ -81,7 +79,7 @@ class Task
         return $this->title;
     }
 
-    public function setTitle($title): void {
+    public function setTitle(string $title): void {
         $this->title = $title;
     }
 
@@ -89,7 +87,7 @@ class Task
         return $this->content;
     }
 
-    public function setContent($content): void {
+    public function setContent(string $content): void {
         $this->content = $content;
     }
 
@@ -97,7 +95,7 @@ class Task
         return $this->isDone;
     }
 
-    public function toggle($flag): void {
+    public function toggle(bool $flag): void {
         $this->isDone = $flag;
     }
 

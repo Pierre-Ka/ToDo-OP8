@@ -23,7 +23,7 @@ class UserType extends AbstractType
      * @return void
      * @SuppressWarnings("unused")
      */
-    public function buildForm(FormBuilderInterface $builder, array $option): void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username', TextType::class, [
