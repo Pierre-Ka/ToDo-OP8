@@ -4,6 +4,7 @@ namespace App\Tests\Security\Voter;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Security\Voter\TaskVoter;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -11,26 +12,33 @@ class TaskVoterTest extends WebTestCase
 {
     private Task $task;
     protected $client;
+    protected TaskVoter $taskVoter;
 
     public function setUp(): void
     {
         $this->task = new Task();
         $this->client = static::createClient();
+        $this->taskVoter = new TaskVoter();
+
     }
 
     public function testSupports(): void
     {
-        $attribute = 'delete';
-        $object = $this->task;
-        if ('delete' !== $attribute) {
-            $return =  false;
-        }
-        if (!$object instanceof Task) {
-            $return =  false;
-        }
-        $return =  true;
+        // supports est devenu public
+        self::assertSame(true, $this->taskVoter->supports('delete', $this->task));
 
-        $this->assertSame(true, $return);
+        // ancien code quand supports eétait protected
+//        $attribute = 'delete';
+//        $object = $this->task;
+//        if ('delete' !== $attribute) {
+//            $return =  false;
+//        }
+//        if (!$object instanceof Task) {
+//            $return =  false;
+//        }
+//        $return =  true;
+//
+//        $this->assertSame(true, $return);
     }
 
     public function testSupportsWithWrongAttribute(): void

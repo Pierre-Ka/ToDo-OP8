@@ -2,10 +2,11 @@
 
 namespace App\Manager;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserManager
+class UserManager implements UserManagerInterface
 {
     private UserPasswordHasherInterface $hasher;
     private EntityManagerInterface $em;
@@ -16,17 +17,15 @@ class UserManager
         $this->hasher = $hasher;
     }
 
-    // Pas de form dans le manager => traitement seulement ($password, $user)
-    public function new($form, $user): void
+    public function new(string $plainPassword, User $user): void
     {
-        $plainPassword = $form->get('password')->getData();
         $password =  $this->hasher->hashPassword($user, $plainPassword);
         $user->setPassword($password);
         $this->em->persist($user);
         $this->em->flush();
     }
 
-    public function update($user): void
+    public function update(User $user): void
     {
         $password = $this->hasher->hashPassword($user, $user->getPassword());
         $user->setPassword($password);
