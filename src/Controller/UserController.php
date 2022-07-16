@@ -9,20 +9,19 @@ use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Security("is_granted('ROLE_ADMIN')", message: 'Page Introuvable', statusCode: 404)]
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list', methods: ['GET'])]
-    public function list(UserRepository $userRepository)
-    {
+    public function list(UserRepository $userRepository): Response {
         return $this->render('user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
 
     #[Route('/users/create', name: 'user_create', methods: ['GET', 'POST'])]
-    public function create(Request $request, UserManagerInterface $userManager)
-    {
+    public function create(Request $request, UserManagerInterface $userManager): Response {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -38,8 +37,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(User $user, Request $request, UserManagerInterface $userManager)
-    {
+    public function edit(User $user, Request $request, UserManagerInterface $userManager): Response {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

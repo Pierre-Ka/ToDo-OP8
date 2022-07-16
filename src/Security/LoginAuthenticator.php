@@ -25,28 +25,17 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
     private UrlGeneratorInterface $urlGenerator;
     private UserRepository $userRepository;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, UserRepository $userRepository)
-    {
+    public function __construct(UrlGeneratorInterface $urlGenerator, UserRepository $userRepository)  {
         $this->urlGenerator = $urlGenerator;
         $this->userRepository = $userRepository;
     }
 
-    public function authenticate(Request $request): Passport
-    {
+    public function authenticate(Request $request): Passport  {
         $email = $request->request->get('_username', '');
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
-        /*
-         * https://symfony.com/doc/current/security/custom_authenticator.html
-         * You can optionally pass a user loader as second argument to the UserBadge. This callable receives the
-         * $userIdentifier and must return a UserInterface object (otherwise a UserNotFoundException is thrown):
-         * Pourquoi il n'est pas capable de trouver l'Userloader tout seul ? Finalement, si ?
-         */
-
         return new Passport(
-            new UserBadge($email /*, function ($email) {
-                return $this->userRepository->findOneBy(['email' => $email]);
-            } */),
+            new UserBadge($email),
             new PasswordCredentials($request->request->get('_password', '')),
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
@@ -54,16 +43,17 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response  {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+
             return new RedirectResponse($targetPath);
         }
+
         return new RedirectResponse($this->urlGenerator->generate('homepage'));
     }
 
-    protected function getLoginUrl(Request $request): string
-    {
+    protected function getLoginUrl(Request $request): string  {
+
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }

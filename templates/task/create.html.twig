@@ -4,17 +4,16 @@
 {% block header_img %}{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-lg-4"></div>
-    <div class="col-lg-4 p-3">
-        {{ form_start(form, {'action' : path('task_create')}) }}
-            {{ form_widget(form) }}
-
-        <div class="text-center m-4">
-            <button type="submit" class="btn btn-success">Ajouter</button>
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4 p-3">
+            {{ form_start(form, {'action' : path('task_create')}) }}
+                {{ form_widget(form) }}
+            <div class="text-center m-4">
+                <button type="submit" class="btn btn-success">Ajouter</button>
+            </div>
+            {{ form_end(form) }}
+            <a href="{{ path('homepage') }}" class="btn btn-secondary mt-5">Retour à la page d'accueil</a>
         </div>
-        {{ form_end(form) }}
-        <a href="{{ path('homepage') }}" class="btn btn-secondary mt-5">Retour à la page d'accueil</a>
     </div>
-</div>
 {% endblock %}

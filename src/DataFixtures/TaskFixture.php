@@ -13,8 +13,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
 {
     public const NUMBER_OF_TASK = 100;
 
-    public function load(ObjectManager $manager): void
-    {
+    public function load(ObjectManager $manager): void  {
         $faker = Factory::create('fr_FR');
         for ($i = 0; $i < self::NUMBER_OF_TASK; $i++) {
             $task = new Task();
@@ -22,31 +21,25 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
             $task->setTitle($faker->word());
             $task->setContent($faker->sentence(6, true));
             $referentTime = $faker->dateTimeBetween('-6 months', 'now');
-
             $userKey = rand(0, UserFixtures::NUMBER_OF_USER - 1);
             /** @var User $user */
             $user = $this->getReference('user_' . $userKey);
-            if ( $task->getCreatedAt() >= $referentTime )
-            {
+            if ( $task->getCreatedAt() >= $referentTime ) {
                 $task->setUser($user);
             }
-
-            if($task->getCreatedAt() >= $faker->dateTimeThisMonth())
-            {
+            if($task->getCreatedAt() >= $faker->dateTimeThisMonth()) {
                 $task->toggle(0);
             }
-            else
-            {
+            else {
                 $task->toggle(1);
             }
             $manager->persist($task);
-
         }
         $manager->flush();
     }
 
-    public function getDependencies(): array
-    {
+    public function getDependencies(): array  {
+
         return [
             UserFixtures::class,
         ];

@@ -13,13 +13,11 @@ class UserFixtures extends Fixture
     public const NUMBER_OF_USER = 10;
     private UserPasswordHasherInterface $hasher;
 
-    public function __construct(UserPasswordHasherInterface $hasher)
-    {
+    public function __construct(UserPasswordHasherInterface $hasher)  {
         $this->hasher = $hasher;
     }
 
-    public function load(ObjectManager $manager): void
-    {
+    public function load(ObjectManager $manager): void  {
         $faker = Factory::create('fr_FR');
         for ($i = 0; $i < self::NUMBER_OF_USER; $i++) {
             $user = new User();
@@ -50,4 +48,3 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 }
-

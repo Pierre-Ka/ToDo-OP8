@@ -2,11 +2,9 @@
 
 namespace App\Tests\Controller;
 
-//        dd($this->client->getResponse()->getContent());
 class SecurityControllerTest extends AbstractControllerTest
 {
-    public function testLoginAsAdmin(): void
-    {
+    public function testLoginAsAdmin(): void {
         $this->loginAsAdmin();
 
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
@@ -16,8 +14,7 @@ class SecurityControllerTest extends AbstractControllerTest
         self::assertContains('Consulter la liste des utilisateurs', [$crawler->filter('#test-for-admin')->text()]);
     }
 
-    public function testLoginAsUser(): void
-    {
+    public function testLoginAsUser(): void {
         $this->loginAsUser();
 
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
@@ -27,23 +24,21 @@ class SecurityControllerTest extends AbstractControllerTest
         self::assertNotContains($crawler->filter('#test-for-admin'), [$crawler]);
     }
 
-    public function testLoginFailure(): void
-    {
+    public function testLoginFailure(): void {
         $this->loginAsNonUser();
 
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
         self::assertEquals('login', $this->client->getRequest()->get('_route'));
-        self::assertContains('Invalid credentials.', [$crawler->filter('div.alert.alert-danger')->text()]);
+        self::assertContains('Oooops probleme d\'authentification !!', [$crawler->filter('div.alert.alert-danger')->text()]);
         self::assertContains('Se connecter', [$crawler->filter('button.btn.btn-success')->text()]);
         self::assertNotContains($crawler->filter('#test-for-admin'), [$crawler]);
     }
 
-    public function testLogout()
-    {
+    public function testLogout() {
         $this->getUser();
-        $crawler = $this->client->request('GET', '/');
 
+        $crawler = $this->client->request('GET', '/');
         $link = $crawler->selectLink('Se deconnecter')->link();
         $this->client->click($link);
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());

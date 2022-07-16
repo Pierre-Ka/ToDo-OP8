@@ -7,16 +7,14 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use App\Tests\Controller\AbstractControllerTest;
 
-//        dd($this->client->getResponse()->getContent());
 class EditUserControllerTest extends AbstractControllerTest
 {
-    /** @var TaskRepository */
-    protected $taskRepository;
-    /** @var UserRepository */
-    protected $userRepository;
+//    /** @var TaskRepository */
+    protected TaskRepository $taskRepository;
+//    /** @var UserRepository */
+    protected UserRepository $userRepository;
 
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->taskRepository = $this->getContainer()->get(TaskRepository::class);
         $this->userRepository = $this->getContainer()->get(UserRepository::class);
@@ -24,8 +22,7 @@ class EditUserControllerTest extends AbstractControllerTest
 
     /******************************************* Edit User **********************************************************/
 
-    public function testEditUserSuccessfully(): void
-    {
+    public function testEditUserSuccessfully(): void {
         $this->getAdmin();
 
         $crawler = $this->client->request('GET', '/users/8/edit');

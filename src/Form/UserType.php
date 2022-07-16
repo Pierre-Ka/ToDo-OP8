@@ -17,14 +17,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface<string|FormBuilderInterface> $builder
-     * @param array<string> $option
-     * @return void
-     * @SuppressWarnings("unused")
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void  {
         $builder
             ->add('username', TextType::class, [
                 'label' => "Nom d'utilisateur"
@@ -43,8 +37,7 @@ class UserType extends AbstractType
                         new Length([
                             'min' => 6,
                             'minMessage' => 'Votre mot de passe doit avoir au moins {{ limit }} caractères',
-                            // max length allowed by Symfony for security reasons
-                            'max' => 4096,
+                            'max' => 64,
                         ]),
                     ],
                 ],
@@ -62,26 +55,18 @@ class UserType extends AbstractType
                 'empty_data' => ['ROLE_USER'],
                 'required' => true
             ]);
-
-        // Ici il se passe que le form renvoie un string : 'ROLE_USER' ou 'ROLE_ADMIN' alors que l'entité
-        // attend un array. Pk ? Car on a pas activé le multiple => true. Mais dans notre cas, on ne l'active pas
-        // alors on va créer un dataTransformer pour "rôles" :
-        //roles field data transformer
         $builder->get('roles')
             ->addModelTransformer(new CallbackTransformer(
                 function ($rolesArray) {
-                    // transform the array to a string
                     return count($rolesArray) ? $rolesArray[0] : null;
                 },
                 function ($rolesString) {
-                    // transform the string back to an array
                     return [$rolesString];
                 }
             ));
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
+    public function configureOptions(OptionsResolver $resolver): void  {
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);

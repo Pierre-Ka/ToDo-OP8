@@ -2,11 +2,9 @@
 
 namespace App\Tests\Controller;
 
-//        dd($this->client->getResponse()->getContent());
 class DefaultControllerTest extends AbstractControllerTest
 {
-    public function testIndexAsNonUser(): void
-    {
+    public function testIndexAsNonUser(): void {
         $crawler = $this->client->request('GET', '/');
         self::assertEquals(302, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
@@ -14,10 +12,8 @@ class DefaultControllerTest extends AbstractControllerTest
         self::assertContains('Entrer votre email :', [$crawler->filter('label')->text()]);
     }
 
-    public function testIndexAsUser(): void
-    {
+    public function testIndexAsUser(): void {
         $this->getUser();
-
         $crawler = $this->client->request('GET', '/');
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
         self::assertContains('Que souhaitez-vous faire maintenant ?', [$crawler->filter('h2')->text()]);

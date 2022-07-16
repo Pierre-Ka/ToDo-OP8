@@ -10,66 +10,32 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-//#[ORM\Entity]
-//#[ORM\Table("user")]    /*
-/**
- * @ORM\Table("user")
- * @ORM\Entity
- */
-
-// Double unique entité ne marche pas ?!
-// Pourtant c'est la doc: https://symfony.com/doc/current/reference/constraints/UniqueEntity.html#fields
-//#[UniqueEntity(fields: ['email', 'username'], message: 'Ce champ doit être unique')]
-#[UniqueEntity(fields: ['email'], message: 'Ce champ doit être unique')]
-#[UniqueEntity(fields: ['username'], message: 'Ce champ doit être unique')]
-
+#[ORM\Entity]
+#[UniqueEntity(fields: ['email'], message: 'L\'email doit être unique')]
+#[UniqueEntity(fields: ['username'], message: 'Le nom d\'utilisateur doit être unique')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-//    #[ORM\Id]
-//    #[ORM\GeneratedValue(strategy: 'AUTO')]
-//    #[ORM\Column(type: 'integer')]    /*
-     /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-//    #[ORM\Column(type: 'string', length: 25, unique: true)]
-//    #[Assert\NotBlank(message: 'Vous devez saisir un nom d\'utilisateur.')]     /*
-    /**
-     * @ORM\Column(type="string", length=25, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
-     */
+    #[ORM\Column(type: 'string', length: 25, unique: true)]
+    #[Assert\NotBlank(message: 'Vous devez saisir un nom d\'utilisateur.')]
     private string $username;
 
-//    #[ORM\Column(type: 'string', length: 64)]       /*
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
+    #[ORM\Column(type: 'string', length: 64)]
     private string $password;
 
-//    #[ORM\Column(type: 'string', length: 60, unique: true)]
-//    #[Assert\NotBlank(message: 'Vous devez saisir une adresse email.')]
-//    #[Assert\Email(message:'Le format de l\'adresse n\'est pas correcte.')]       /*
-    /**
-     * @ORM\Column(type="string", length=60, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
-     * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
-     */
+    #[ORM\Column(type: 'string', length: 60, unique: true)]
+    #[Assert\NotBlank(message: 'Vous devez saisir une adresse email.')]
+    #[Assert\Email(message:'Le format de l\'adresse n\'est pas correcte.')]
     private string $email;
 
-//    #[ORM\Column(type: 'json')]     /*
-    /**
-     * @ORM\Column(type="json")
-     * @var array<string>
-     */
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-//    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]       /*
-    /**
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="user")
-     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
     private ?Collection $tasks;
 
     public function __construct() {
@@ -77,10 +43,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getId(): ?int {
+
         return $this->id;
     }
 
     public function getUsername(): string {
+
         return $this->username;
     }
 
@@ -89,10 +57,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getSalt() {
+
         return null;
     }
 
     public function getPassword(): ?string {
+
         return $this->password;
     }
 
@@ -101,6 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getEmail(): string {
+
         return $this->email;
     }
 
@@ -109,6 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getRoles(): array {
+
         return (array) $this->roles;
     }
 
@@ -123,10 +95,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getUserIdentifier(): string {
+
         return $this->getEmail();
     }
 
     public function getTasks(): ?Collection {
+
         return $this->tasks;
     }
 

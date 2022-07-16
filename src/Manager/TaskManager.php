@@ -11,29 +11,24 @@ class TaskManager implements TaskManagerInterface
     private EntityManagerInterface $em;
     private Security $security;
 
-    public function __construct(EntityManagerInterface $em, Security $security)
-    {
+    public function __construct(EntityManagerInterface $em, Security $security)  {
         $this->em = $em;
         $this->security = $security;
     }
 
-    public function new(Task $task)
-    {
+    public function new(Task $task): void  {
         $task->setUser($this->security->getUser());
         $this->em->persist($task);
         $this->em->flush();
     }
-    public function update()
-    {
+    public function update():void  {
         $this->em->flush();
     }
-    public function toggle(Task $task)
-    {
+    public function toggle(Task $task): void  {
         $task->toggle(!$task->isDone());
         $this->em->flush();
     }
-    public function delete(Task $task)
-    {
+    public function delete(Task $task): void {
         $this->em->remove($task);
         $this->em->flush();
     }

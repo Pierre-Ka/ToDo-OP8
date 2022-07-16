@@ -5,57 +5,29 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-//#[ORM\Entity]
-//#[ORM\Table]    /*
-/**
- * @ORM\Entity
- * @ORM\Table
- */
-
+#[ORM\Entity]
 class Task
 {
-//    #[ORM\Id]
-//    #[ORM\GeneratedValue(strategy: 'AUTO')]
-//    #[ORM\Column(type: 'integer')]      /*
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-//    #[ORM\Column(type: 'datetime')]     /*
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private \DateTime $createdAt;
 
-//    #[ORM\Column(type: 'string')]
-//    #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]      /*
-    /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="Vous devez saisir un titre.")
-     */
+    #[ORM\Column(type: 'string')]
+    #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
     private string $title;
 
-//    #[ORM\Column(type: 'text')]
-//    #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]        /*
-    /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank(message="Vous devez saisir du contenu.")
-     */
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]
     private string $content;
 
-//    #[ORM\Column(type: 'boolean')]      /*
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $isDone;
 
-//    #[ORM\ManyToOne(targetEntity: user::class, inversedBy: 'tasks')]        /*
-    /**
-     * @ORM\ManyToOne(targetEntity=user::class, inversedBy="tasks")
-     */
+    #[ORM\ManyToOne(targetEntity: user::class, inversedBy: 'tasks')]
     private ?User $user;
 
     public function __construct() {
@@ -64,10 +36,12 @@ class Task
     }
 
     public function getId(): ?int {
+
         return $this->id;
     }
 
     public function getCreatedAt(): \DateTime {
+
         return $this->createdAt;
     }
 
@@ -76,6 +50,7 @@ class Task
     }
 
     public function getTitle(): string {
+
         return $this->title;
     }
 
@@ -84,6 +59,7 @@ class Task
     }
 
     public function getContent(): string {
+
         return $this->content;
     }
 
@@ -92,6 +68,7 @@ class Task
     }
 
     public function isDone(): bool {
+
         return $this->isDone;
     }
 
@@ -108,6 +85,7 @@ class Task
     }
 
     public function getUser(): ?User {
+
         return $this->user;
     }
 
