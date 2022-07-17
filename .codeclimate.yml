@@ -4,7 +4,7 @@ exclude_patterns:
   - "public/css"
   - "public/js"
   - "**/vendor/"
-- ## je recopie les fichiers ignorés par default
+## je recopie les fichiers ignorés par default
   - "config/"
   - "db/"
   - "dist/"
