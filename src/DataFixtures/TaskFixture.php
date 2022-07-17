@@ -28,10 +28,10 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
                 $task->setUser($user);
             }
             if($task->getCreatedAt() >= $faker->dateTimeThisMonth()) {
-                $task->toggle(0);
+                $task->toggle(false);
             }
             else {
-                $task->toggle(1);
+                $task->toggle(true);
             }
             $manager->persist($task);
         }

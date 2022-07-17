@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
@@ -27,8 +28,8 @@ class Task
     #[ORM\Column(type: 'boolean')]
     private bool $isDone;
 
-    #[ORM\ManyToOne(targetEntity: user::class, inversedBy: 'tasks')]
-    private ?User $user;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
+    private ?UserInterface $user;
 
     public function __construct() {
         $this->createdAt = new \Datetime();
@@ -84,12 +85,12 @@ class Task
         $this->isDone = false;
     }
 
-    public function getUser(): ?User {
+    public function getUser(): ?UserInterface {
 
         return $this->user;
     }
 
-    public function setUser(?User $user): void {
+    public function setUser(?UserInterface $user): void {
         $this->user = $user;
     }
 }
