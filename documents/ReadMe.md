@@ -1,0 +1,1 @@
+The documentation and the UML Diagrams are in french.

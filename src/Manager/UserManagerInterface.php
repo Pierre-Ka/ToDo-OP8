@@ -6,7 +6,7 @@ use App\Entity\User;
 
 interface UserManagerInterface
 {
-    public function new(string $plainPassword, User $user);
+    public function new(string $plainPassword, User $user): void;
 
-    public function update(User $user);
+    public function update(User $user): void;
 }
