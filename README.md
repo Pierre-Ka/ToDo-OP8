@@ -1,6 +1,7 @@
 # ToDo&Co Application
 ***
 Analyse CodeClimate :
+https://codeclimate.com/github/Pierre-Ka/ToDo-OP8
 
 Repository GitHub :
 https://github.com/Pierre-Ka/ToDo-OP8

@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->username = $username;
     }
 
-    public function getSalt(): ?string {
+    public function getSalt() {
         return null;
     }
 

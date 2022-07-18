@@ -3,6 +3,7 @@ exclude_patterns:
   - "tests/"
   - "public/css"
   - "public/js"
+  - "src/DataFixtures"
   - "**/vendor/"
 ## je recopie les fichiers ignorés par default
   - "config/"

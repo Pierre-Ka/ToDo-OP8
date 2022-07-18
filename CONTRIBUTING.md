@@ -1,18 +1,32 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change.
+Welcome to ToDo&Co Application !
+
+When contributing to this repository, please first be sure to have the necessary permission to make the change you wish to make. If you're unsure please contact us via
+email : 
+application_project_management@todoapp.com
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
 ## Pull Request Process
 
-1. Ensure your coding style follows the PSR standards and the good practices of coding. This project use PHPUnit. Ensure to implement the units and functional tests before or after writing your code. Ensure by playing the line-command ``` make tests ``` that all the tests run well before propose an update.  
-2. Update the README.md with details of changes to the interface, this includes new environment
+1. Before starting, be sure to understand how the application works, the project have been updated recently, please read the audit and technical documentation ( both in french ) and follow the steps written on the README.md to install it. Create a new development git branch, and create a new git branch for each feature to want to develop. When the feature is done merge it on the development branch, then from there is there is no problem to the main branch. 
+
+
+2. Ensure your coding style follows the PSR and the good practices of coding. We are also following the SOLID principles. This project use PHPUnit. Ensure to implement the units and functional tests before or after writing your code. We aim, if possible to have a code coverage over 90%. Ensure by playing the line-command ``` make tests ``` that all the tests run well before propose an update. To understand what this command do, please read the Makefile file.
+
+
+3. After that, ensure to update the documentation. If your changes are too important, you should write a new documentation. Always keep in mind that we want to make it easy for a developper who is new on this project.
+
+
+4. Update the README.md with details of changes, this includes new environment
    variables, exposed ports, useful file locations and container parameters.
-3. Increase the version numbers in any examples files and the README.md to the new version that this
-   Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. To merge the Pull Request you need the sign-off of the project manager, if you cannot do it, you may request the project manager to merge it for you.
+
+   
+5. To merge the Pull Request you need the sign-off of the project manager, if you cannot do it, you may request the project manager to merge it for you.
+
+
+6. Be sure to respect the General Data Protection Regulation or any others national or international regulation. 
 
 ## Code of Conduct
 
@@ -71,7 +85,7 @@ further defined and clarified by project maintainers.
 ### Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at [INSERT EMAIL ADDRESS]. All
+reported by contacting the project team at application_project_management@todoapp.com. All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
